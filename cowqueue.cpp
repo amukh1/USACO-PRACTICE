@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <fstream>
+#include <map>
 
 /* sample in:
 3
@@ -23,17 +24,28 @@ int main() {
     }
 
     // sorting
+    // for(int i = 0; i<n-1; i++) {
+    //     if(arriv[i] > arriv[i+1]) { 
+    //         int a = arriv[i];
+    //         arriv[i] = arriv[i+1];
+    //         arriv[i+1] = a;
+
+    //         int b = timeup[i];
+    //         timeup[i] = timeup[i+1];
+    //         timeup[i+1] = b;
+    //      }else continue;
+    // }
+
+    // try sorting (again) :sob:
     for(int i = 0; i<n-1; i++) {
         if(arriv[i] > arriv[i+1]) { 
-            int a = arriv[i];
-            arriv[i] = arriv[i+1];
-            arriv[i+1] = a;
-
-            int b = timeup[i];
-            timeup[i] = timeup[i+1];
-            timeup[i+1] = b;
+            std::swap(arriv[i], arriv[i+1]);
+            std::swap(timeup[i], timeup[i+1]);
          }else continue;
     }
+
+    // if arriv doesnt equal map sorted with c++ sort function, log error
+    if(!std::is_sorted(arriv, arriv+n)) std::cout << "error" << std::endl;
 
     // for(int i = 0; i<n; i++) std::cout << arriv[i] << " " << timeup[i] << std::endl;
     int time = 0;
