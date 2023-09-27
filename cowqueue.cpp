@@ -23,6 +23,11 @@ int main() {
         file >> arriv[i] >> timeup[i];
     }
 
+    std::map<int, int> cowqueue;
+    for(int i = 0; i<n; i++) {
+        cowqueue.insert(std::pair<int, int>(arriv[i], timeup[i]));
+    }
+
     // sorting
     // for(int i = 0; i<n-1; i++) {
     //     if(arriv[i] > arriv[i+1]) { 
@@ -37,21 +42,36 @@ int main() {
     // }
 
     // try sorting (again) :sob:
-    for(int i = 0; i<n-1; i++) {
-        if(arriv[i] > arriv[i+1]) { 
-            std::swap(arriv[i], arriv[i+1]);
-            std::swap(timeup[i], timeup[i+1]);
-         }else continue;
+    // for(int i = 0; i<n-1; i++) {
+    //     if(arriv[i] > arriv[i+1]) { 
+    //         std::swap(arriv[i], arriv[i+1]);
+    //         std::swap(timeup[i], timeup[i+1]);
+    //      }else continue;
+    // }
+
+    // sort MAP by key from greatest to least
+    std::map<int, int>::iterator it = cowqueue.begin();
+    for(int i = 0; i<n; i++) {
+        arriv[i] = it->first;
+        timeup[i] = it->second;
+        it++;
     }
 
+
+
     // if arriv doesnt equal map sorted with c++ sort function, log error
-    if(!std::is_sorted(arriv, arriv+n)) std::cout << "error" << std::endl;
+    // if(!std::is_sorted(arriv, arriv+n)) std::cout << "error" << std::endl;
 
     // for(int i = 0; i<n; i++) std::cout << arriv[i] << " " << timeup[i] << std::endl;
     int time = 0;
-    for(int i = 0; i<n; i++) {
-        if (time < arriv[i]) time = arriv[i];
-        time += timeup[i];
+    // for(int i = 0; i<n; i++) {
+    //     if (time < arriv[i]) time = arriv[i];
+    //     time += timeup[i];
+    // }
+
+    for(std::pair<int,int> cow : cowqueue){
+        if (time < cow.first) time = cow.first;
+        time += cow.second;
     }
 
     file.close();
