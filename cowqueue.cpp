@@ -16,8 +16,8 @@ int main() {
     file.open("cowqueue.in", std::ios::in);
     int n;
     file >> n;
-    int arriv[n];
-    int timeup[n];
+    int* arriv = new int[n];
+    int* timeup = new int[n];
 
     for (int i = 0; i < n; i++) {
         file >> arriv[i] >> timeup[i];
@@ -25,8 +25,12 @@ int main() {
 
     std::map<int, int> cowqueue;
     for(int i = 0; i<n; i++) {
-        cowqueue.insert(std::pair<int, int>(arriv[i], timeup[i]));
+        if(cowqueue.count(arriv[i]) > 0) cowqueue[arriv[i]] += timeup[i];
+        else cowqueue.insert(std::pair<int, int>(arriv[i], timeup[i]));
+        // cowqueue.insert(std::pair<int, int>(arriv[i], timeup[i]));
     }
+
+    // for(int i = 0; i<n; i++) std::cout << i << " " << cowqueue[arriv[i]] << std::endl;
 
     // sorting
     // for(int i = 0; i<n-1; i++) {
