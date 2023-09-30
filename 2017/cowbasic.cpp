@@ -112,11 +112,12 @@ std::vector<Token> lex(std::string program) {
 std::vector<Node> parse(std::vector<Token> Tokens) {
     std::vector<Node> AST;
     int cursor = 0;
-    while(cursor != Tokens.size() - 1) {
+    while(cursor != Tokens.size()) {
         switch(Tokens[cursor].type) {
             case WORD:
-                            std::cout << "here" << std::endl;
+     
             if(((cursor+1) < Tokens.size()) && Tokens[cursor+1].type == EQUALS) {
+                                       
                 // equal situation
                 Node N;
                 N.type = DECLARATION;
@@ -130,7 +131,9 @@ std::vector<Node> parse(std::vector<Token> Tokens) {
                     // parse expression
                     exp.push_back(Tokens[cursor]);
                     cursor++;
+                    if(cursor == Tokens.size() || Tokens[cursor].type == END) break;
                 }
+                std::cout << "here" << std::endl;
                 // std::cout << "end" << std::endl;
                 N.children = parse(exp);
                 AST.push_back(N);
@@ -249,7 +252,7 @@ int main() {
     for(int i = 0; i<Tokens.size(); i++) {
         std::cout << Tokens[i].type << " ";
     }
-    // std::vector<Node> AST = parse(Tokens);
+    std::vector<Node> AST = parse(Tokens);
 
     // std::cout << AST.size() << std::endl;
 
