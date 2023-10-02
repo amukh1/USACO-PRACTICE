@@ -276,15 +276,6 @@ int interpret(Interpreter* I, std::vector<Node> AST) {
             if(AST[i].children.size() == 0) return I->variables[AST[i].value];
             else
             // it is addition (can be more than 2)
-            if((i+1) < AST.size() && AST[i+1].value == "+") {
-                int sum = 0;
-                for(int j = 0; j<AST[i].children.size(); j++) {
-                    std::cout << "LOGS " << interpret(I, {AST[i].children[j]}) << std::endl;
-                    sum += interpret(I, {AST[i].children[j]});
-                }
-                return sum;
-            }
-            else
             return interpret(I, AST[i].children);
             break;
             case STATEMENT:
