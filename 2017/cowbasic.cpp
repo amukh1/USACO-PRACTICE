@@ -137,7 +137,17 @@ std::vector<Node> parse(std::vector<Token> Tokens) {
                 }
                 // std::cout << "here" << std::endl;
                 // std::cout << "end" << std::endl;
-                N.children = parse(exp);
+                Node N2;
+                N2.type = EXPRESSION;
+                N2.value = ")";
+                N2.children = parse(exp);
+                // N.children = parse(exp);
+                N.children = {N2};
+                // Node N2;
+                // N2.type = EXPRESSION;
+                // N2.value = Tokens[cursor].value;
+                // N2.children = N.children;
+                // N.children = {N2};
                 AST.push_back(N);
             }else if(Tokens[cursor].value == "RETURN") {
                                                                 // std::cout << "IM STUCK IN HERE IM STUCK IN HERE" << std::endl;
@@ -274,9 +284,15 @@ int interpret(Interpreter* I, std::vector<Node> AST) {
             case EXPRESSION:
             // if expression is single, return the value at that variable
             if(AST[i].children.size() == 0) return I->variables[AST[i].value];
-            else
-            // it is addition (can be more than 2)
-            return interpret(I, AST[i].children);
+            else if(AST[i].children.size() == 1) return interpret(I, AST[i].children);
+            else {
+                // addition
+                int sum = 0;
+                for(int j = 0; j<AST[i].children.size(); j++) {
+                    sum += interpret(I, AST[i].children[j].children);
+                }
+                return sum;
+            }
             break;
             case STATEMENT:
             return I->variables[AST[i].value];
