@@ -114,10 +114,9 @@ std::vector<Node> parse(std::vector<Token> Tokens) {
     std::vector<Node> AST;
     int cursor = 0;
     while(cursor != Tokens.size()) {
-        // std::cout << cursor << std::endl;
-        // std::cout << Tokens[cursor].type << std::endl;
-        if(Tokens[cursor].type == WORD) {
-
+        switch(Tokens[cursor].type) {
+            case WORD:
+     
             if(((cursor+1) < Tokens.size()) && Tokens[cursor+1].type == EQUALS) {
                                        
                 // equal situation
@@ -129,35 +128,31 @@ std::vector<Node> parse(std::vector<Token> Tokens) {
                 cursor+=2;
                 // std::cout << Tokens[cursor+1].type << std::endl;
                 std::vector<Token> exp;
-                                // std::cout << "here" << std::endl;
                 while(Tokens[cursor].type != END) {
                     // parse expression
                     exp.push_back(Tokens[cursor]);
                     cursor++;
                     if(cursor == Tokens.size() || Tokens[cursor].type == END) break;
                 }
-                // std::cout << "here" << std::endl;
+                std::cout << "here" << std::endl;
                 // std::cout << "end" << std::endl;
                 N.children = parse(exp);
                 AST.push_back(N);
             }else if(Tokens[cursor].value == "RETURN") {
-                                                                // std::cout << "IM STUCK IN HERE IM STUCK IN HERE" << std::endl;
                 // return <variable>
                 Node N;
                 N.type = STATEMENT;
                 N.value = Tokens[cursor+1].value;
                 AST.push_back(N);
-                cursor+=2;
             }else {
                 // single expression, Non-Literal
                 Node N;
                 N.type = EXPRESSION;
                 N.value = Tokens[cursor].value;
                 AST.push_back(N);
-                cursor++;
             }
-            // break;
-            }else if(Tokens[cursor].type == NUMBER) {
+            break;
+            case NUMBER: 
             if(((cursor+1) < Tokens.size()) && Tokens[cursor+1].type == MOO) {
                 /*syntax:
                 <iterations> MOO {
@@ -176,16 +171,14 @@ std::vector<Node> parse(std::vector<Token> Tokens) {
                     cursor++;
                 }
             }else {
-                // std::cout << "here" << std::endl;
                 // single expression, Literal
                 Node N;
                 N.type = LITERAL;
                 N.value = Tokens[cursor].value;
                 AST.push_back(N);
-                cursor++;
             }
-            // break;
-            }else if(Tokens[cursor].type == O_PAREN) {
+            break;
+            case O_PAREN:
             // expressions can be nested. Addition is always in the form ( x ) + ( y ) + ...
             // parse expression until C_PAREN
             cursor++;
@@ -203,22 +196,11 @@ std::vector<Node> parse(std::vector<Token> Tokens) {
             N.value = Tokens[cursor].value;
             N.children = parse(exp);
             AST.push_back(N);
-            // break;
-            }else if(Tokens[cursor].type == PLUS) {
-            // addition
-            Node N;
-            N.type = EXPRESSION;
-            N.value = Tokens[cursor].value;
-            AST.push_back(N);
-            cursor++;
-            }else if(Tokens[cursor].type != END) {
-                std::cout << "error" << std::endl;
-                std::cout << Tokens[cursor].type << std::endl;
-                cursor++;
-            }else cursor++;
+            break;
         }
-        return AST; // 🐶🐶🐶
-    }   
+    }
+    return AST;
+}
 
 std::string JSONIFY(std::vector<Node> AST) {
     std::string json = "[";
