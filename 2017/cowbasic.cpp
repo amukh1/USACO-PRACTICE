@@ -279,7 +279,7 @@ int interpret(Interpreter* I, std::vector<Node> AST) {
             if((i+1) < AST.size() && AST[i+1].value == "+") {
                 int sum = 0;
                 for(int j = 0; j<AST[i].children.size(); j++) {
-                    // std::cout << AST[i].children[j].value << std::endl;
+                    std::cout << "LOGS " << interpret(I, {AST[i].children[j]}) << std::endl;
                     sum += interpret(I, {AST[i].children[j]});
                 }
                 return sum;
@@ -336,7 +336,7 @@ int main() {
     // interpreting
     Interpreter I;
 
-    std::cout << "OUTPUT: " << interpret(&I, AST) << std::endl;
+    std::cout << interpret(&I, AST) << std::endl;
 
     return 0;
 }
