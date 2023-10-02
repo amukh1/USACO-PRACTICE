@@ -322,13 +322,13 @@ int main() {
 
     std::vector<Token> Tokens = lex(program);
     // output tokens
-    for(int i = 0; i<Tokens.size(); i++) {
-        std::cout << Tokens[i].type << " ";
-    }
+    // for(int i = 0; i<Tokens.size(); i++) {
+    //     std::cout << Tokens[i].type << " ";
+    // }
     std::vector<Node> AST = parse(Tokens);
 
-    std::cout << std::endl;
-    std::cout << AST.size() << std::endl;
+    // std::cout << std::endl;
+    // std::cout << AST.size() << std::endl;
 
     // log ast TYPES
     // for(int i = 0; i<AST.size(); i++) {
