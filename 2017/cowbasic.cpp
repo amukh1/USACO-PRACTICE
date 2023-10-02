@@ -158,7 +158,10 @@ std::vector<Node> parse(std::vector<Token> Tokens) {
             }
             // break;
             }else if(Tokens[cursor].type == NUMBER) {
+                // std::cout << "here" << std::endl;
             if(((cursor+1) < Tokens.size()) && Tokens[cursor+1].type == MOO) {
+                // std::cout << "here" << std::endl;
+
                 /*syntax:
                 <iterations> MOO {
                     <statements>
@@ -166,15 +169,18 @@ std::vector<Node> parse(std::vector<Token> Tokens) {
                 Node N;
                 N.type == LOOP;
                 N.value = Tokens[cursor].value;
-                cursor+=2;
+                cursor+=3;
                 std::vector<Token> statements;
                 int nestings = 1;
                 while(nestings != 0) {
                     if(Tokens[cursor].type == O_BRACE) nestings++;
                     else if(Tokens[cursor].type == C_BRACE) nestings--;
+                    // if(nestings == 0) break;
                     statements.push_back(Tokens[cursor]);
                     cursor++;
                 }
+                // std::cout << statements.size() << std::endl;
+                cursor++;
             }else {
                 // std::cout << "here" << std::endl;
                 // single expression, Literal
@@ -194,15 +200,16 @@ std::vector<Node> parse(std::vector<Token> Tokens) {
             while(nestings != 0) {
                 if(Tokens[cursor].type == O_PAREN) nestings++;
                 else if(Tokens[cursor].type == C_PAREN) nestings--;
+                if(nestings == 0) break;
                 exp.push_back(Tokens[cursor]);
                 cursor++;
             }
-
             Node N;
             N.type = EXPRESSION;
             N.value = Tokens[cursor].value;
             N.children = parse(exp);
             AST.push_back(N);
+            cursor++;
             // break;
             }else if(Tokens[cursor].type == PLUS) {
             // addition
@@ -262,7 +269,7 @@ int main() {
     // empty contents of file into string (multiline)
     std::string line;
     while(std::getline(file, line)) {
-        program += line + " \n";
+        program += " " + line + " \n";
     }
 
 
