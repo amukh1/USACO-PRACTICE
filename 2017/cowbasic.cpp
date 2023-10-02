@@ -97,8 +97,7 @@ std::vector<Token> lex(std::string program) {
             T.type = NUMBER;
             T.value = tokens[i];
             Tokens.push_back(T);
-        }else{
-            std::string a = tokens[i];
+        }else if(tokens[i] != ""){
             // std::cout << a.length() << std::endl;
             // std::cout << is_number(a) << std::endl;
             Token T;
@@ -161,13 +160,14 @@ std::vector<Node> parse(std::vector<Token> Tokens) {
                 // std::cout << "here" << std::endl;
             if(((cursor+1) < Tokens.size()) && Tokens[cursor+1].type == MOO) {
                 // std::cout << "here" << std::endl;
+                // std::cout << AST.size() << std::endl;
 
                 /*syntax:
                 <iterations> MOO {
                     <statements>
                 }*/
                 Node N;
-                N.type == LOOP;
+                N.type = LOOP;
                 N.value = Tokens[cursor].value;
                 cursor+=3;
                 std::vector<Token> statements;
@@ -175,12 +175,14 @@ std::vector<Node> parse(std::vector<Token> Tokens) {
                 while(nestings != 0) {
                     if(Tokens[cursor].type == O_BRACE) nestings++;
                     else if(Tokens[cursor].type == C_BRACE) nestings--;
-                    // if(nestings == 0) break;
+                    if(nestings == 0) break;
                     statements.push_back(Tokens[cursor]);
                     cursor++;
                 }
                 // std::cout << statements.size() << std::endl;
                 cursor++;
+                N.children = parse(statements);
+                AST.push_back(N);
             }else {
                 // std::cout << "here" << std::endl;
                 // single expression, Literal
@@ -260,6 +262,44 @@ std::string JSONIFY(std::vector<Node> AST) {
     return json;
 }
 
+int interpret(Interpreter* I, std::vector<Node> AST) {
+    for(int i = 0; i<AST.size(); i++) {
+        switch(AST[i].type) {
+            case DECLARATION:
+            I->variables[AST[i].value] = interpret(I, AST[i].children);
+            break;
+            case LITERAL:
+            return std::stoi(AST[i].value);
+            break;
+            case EXPRESSION:
+            // if expression is single, return the value at that variable
+            if(AST[i].children.size() == 0) return I->variables[AST[i].value];
+            else
+            // it is addition (can be more than 2)
+            if((i+1) < AST.size() && AST[i+1].value == "+") {
+                int sum = 0;
+                for(int j = 0; j<AST[i].children.size(); j++) {
+                    // std::cout << AST[i].children[j].value << std::endl;
+                    sum += interpret(I, {AST[i].children[j]});
+                }
+                return sum;
+            }
+            else
+            return interpret(I, AST[i].children);
+            break;
+            case STATEMENT:
+            return I->variables[AST[i].value];
+            break;
+            case LOOP:
+            for(int j = 0; j<std::stoi(AST[i].value); j++) {
+                interpret(I, AST[i].children);
+            }
+            break;
+        }
+    }
+    return 0;
+}
+
 int main() {
     std::string program;
 
@@ -280,11 +320,23 @@ int main() {
     }
     std::vector<Node> AST = parse(Tokens);
 
-    // std::cout << AST.size() << std::endl;
+    std::cout << std::endl;
+    std::cout << AST.size() << std::endl;
 
-    // file.close();
-    // file.open("cowbasic.out", std::ios::out);
-    // file << JSONIFY(AST);
-    // file.close();
-    // return 0;
+    // log ast TYPES
+    // for(int i = 0; i<AST.size(); i++) {
+    //     std::cout << AST[i].type << std::endl;
+    // }
+
+    file.close();
+    file.open("cowbasic.out", std::ios::out);
+    file << JSONIFY(AST);
+    file.close();
+
+    // interpreting
+    Interpreter I;
+
+    std::cout << "OUTPUT: " << interpret(&I, AST) << std::endl;
+
+    return 0;
 }

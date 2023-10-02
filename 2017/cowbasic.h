@@ -37,3 +37,7 @@ struct Node {
     std::string value;
     std::vector<Node> children;
 };
+
+struct Interpreter {
+    std::map<std::string, int> variables;
+};
