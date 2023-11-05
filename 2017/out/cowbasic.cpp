@@ -7,7 +7,41 @@
 #include <string>
 #include <cctype>
 
-#include "cowbasic.h"
+enum TType {
+    WORD,
+    NUMBER,
+    PLUS,
+    EQUALS,
+    O_BRACE,
+    C_BRACE,
+    O_PAREN,
+    C_PAREN,
+    MOO,
+    END
+};
+
+enum Type {
+    DECLARATION,
+    LITERAL,
+    EXPRESSION,
+    STATEMENT,
+    LOOP
+};
+
+struct Token {
+    TType type;
+    std::string value;
+};
+
+struct Node {
+    Type type;
+    std::string value;
+    std::vector<Node> children;
+};
+
+struct Interpreter {
+    std::map<std::string, int> variables;
+};
 
 /*  tokens:
 Literals: string && number
@@ -318,7 +352,7 @@ int main() {
     while(std::getline(file, line)) {
         program += " " + line + " \n";
     }
-
+    file.close();
 
     std::vector<Token> Tokens = lex(program);
     // output tokens
@@ -334,16 +368,16 @@ int main() {
     // for(int i = 0; i<AST.size(); i++) {
     //     std::cout << AST[i].type << std::endl;
     // }
-
-    file.close();
     file.open("cowbasic.out", std::ios::out);
-    file << JSONIFY(AST);
-    file.close();
+    // file << JSONIFY(AST);
+    // file.close();
 
     // interpreting
     Interpreter I;
 
-    std::cout << interpret(&I, AST) << std::endl;
+    // std::cout << interpret(&I, AST) << std::endl;
+    file << interpret(&I, AST);
+    file.close();
 
     return 0;
 }
